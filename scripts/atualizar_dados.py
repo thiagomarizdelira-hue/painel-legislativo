@@ -356,7 +356,7 @@ def main():
                     for leg in range(PRIMEIRA_LEGISLATURA, LEGISLATURA_ATUAL + 1)}
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps({
-        "atualizadoEm": datetime.now().isoformat(timespec="seconds"),
+        "atualizadoEm": datetime.now().astimezone().isoformat(timespec="seconds"),
         "inicioLegislatura": inicio_atual,
         "primeiroOrcamento": PRIMEIRO_ORCAMENTO_DO_MANDATO,
         "legislatura": LEGISLATURA_ATUAL,
