@@ -1,0 +1,79 @@
+name: Atualizar dados e publicar
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 9 * * 1"   # toda segunda-feira, 06:00 de Brasília
+  workflow_dispatch:       # botão "Run workflow" para atualizar na hora
+
+permissions:
+  contents: write          # registrar a data da última atualização no repositório
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Reaproveitar arquivos já baixados da Câmara
+        uses: actions/cache@v4
+        with:
+          path: data/raw
+          key: raw-${{ github.run_id }}
+          restore-keys: raw-
+
+      - name: Baixar dados abertos e gerar o painel
+        run: python3 scripts/atualizar_dados.py --refresh-recentes
+
+      - name: Montar o site
+        run: |
+          mkdir -p _site/data
+          cp index.html styles.css app.js manifest.webmanifest sw.js _site/
+          cp -r icons _site/
+          cp -r data/deputados.json data/deps _site/data/
+          touch _site/.nojekyll
+          du -sh _site
+
+      - name: Registrar a data da atualização
+        run: |
+          python3 - <<'PY'
+          import json
+          d = json.load(open("data/deputados.json"))
+          r = d["resumo"]
+          open("ULTIMA_ATUALIZACAO.md", "w").write(
+              f"# Última atualização dos dados\n\n{d['atualizadoEm']}\n\n"
+              f"- Deputados em exercício: {r['deputados']}\n- Projetos (legislatura atual): {r['projetos']}\n"
+              f"- Aprovados: {r['aprovados']}\n- Leis: {r['leis']}\n- Emendas: {r['emendas']}\n")
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ULTIMA_ATUALIZACAO.md
+          git diff --cached --quiet || (git commit -m "Atualiza dados do painel" && git push)
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

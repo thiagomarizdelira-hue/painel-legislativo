@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Painel Legislativo</title>
+  <meta name="description" content="Produção legislativa dos deputados federais em exercício: projetos, aprovados, leis e emendas.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="theme-color" content="#0a4d2e">
+</head>
+<body>
+  <div class="topbar">
+    <div class="wrap">
+      <span>Projeto independente · não oficial</span>
+      <a href="https://dadosabertos.camara.leg.br" target="_blank" rel="noopener">Fonte: Dados Abertos da Câmara ↗</a>
+    </div>
+  </div>
+
+  <header class="header">
+    <div class="wrap header-inner">
+      <a class="brand" href="#">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 40 40"><path d="M4 30h32M8 30V18m8 12V18m8 12V18m8 12V18M4 16 20 7l16 9z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/></svg>
+        </span>
+        <span>
+          <strong>Painel Legislativo</strong>
+          <small>Deputados Federais em exercício</small>
+        </span>
+      </a>
+      <nav class="nav">
+        <a href="#competicao">Competição</a>
+        <a href="#deputados">Deputados</a>
+        <a href="#ranking">Ranking</a>
+        <a href="#partidos">Partidos</a>
+        <a href="#comparar" id="nav-cmp">Comparar</a>
+        <a href="#metodologia">Sobre os dados</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="wrap">
+      <p class="eyebrow" id="hero-leg">57ª Legislatura</p>
+      <h1>Quem são e o que produzem os deputados em mandato</h1>
+      <p class="lead">Projetos apresentados, aprovados, transformados em lei, em tramitação e emendas — de cada um dos deputados federais em exercício.</p>
+      <div class="kpis" id="kpis"></div>
+      <p class="updated" id="updated"></p>
+    </div>
+  </section>
+
+  <main class="wrap">
+    <section id="ranking" class="section">
+      <div class="section-head">
+        <h2>Ranking</h2>
+        <div class="seg" id="rank-metric" role="tablist">
+          <button data-m="aprovados" class="on">Aprovados</button>
+          <button data-m="leis">Leis</button>
+          <button data-m="projetos">Projetos</button>
+          <button data-m="emendas">Emendas</button>
+          <button data-m="tramitando">Em tramitação</button>
+        </div>
+      </div>
+      <ol class="rank" id="rank"></ol>
+    </section>
+
+    <section id="competicao" class="section">
+      <div class="section-head">
+        <h2>Competição · Nota de desempenho</h2>
+        <span class="count">Mandato atual · nota de 0 a 100</span>
+      </div>
+      <p class="sec-lead">Cada deputado recebe uma nota que combina produção de projetos, aprovações, leis, emendas, recursos levados ao estado pelas emendas ao orçamento e uso da cota parlamentar. Clique em um deputado para ver o boletim completo: onde vai bem, onde vai mal e por quê.</p>
+      <div class="podium" id="podium"></div>
+      <div class="classes" id="classes"></div>
+      <details class="weights" id="weights">
+        <summary>Como a nota é calculada · ajustar pesos</summary>
+        <div class="weights-body" id="weights-body"></div>
+      </details>
+      <div class="filters">
+        <input id="c-busca" type="search" placeholder="Buscar por nome…" aria-label="Buscar por nome">
+        <select id="c-partido" aria-label="Partido"><option value="">Todos os partidos</option></select>
+        <select id="c-uf" aria-label="Estado"><option value="">Todos os estados</option></select>
+        <select id="c-ordem" aria-label="Ordenar por"></select>
+      </div>
+      <div class="table-wrap">
+        <table class="table league" id="league">
+          <thead><tr>
+            <th>#</th><th>Deputado</th><th>Nota</th><th>Projetos</th><th>Aprovados</th><th>Leis</th>
+            <th>Emendas</th><th>Recursos pagos</th><th>Cota / mês</th><th>Situação</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="more"><button id="c-more" class="btn">Mostrar mais</button></div>
+    </section>
+
+    <section id="deputados" class="section">
+      <div class="section-head">
+        <h2>Deputados em exercício <span class="count" id="dep-count"></span></h2>
+      </div>
+      <div class="filters">
+        <input id="f-busca" type="search" placeholder="Buscar por nome…" aria-label="Buscar por nome">
+        <select id="f-partido" aria-label="Partido"><option value="">Todos os partidos</option></select>
+        <select id="f-uf" aria-label="Estado"><option value="">Todos os estados</option></select>
+        <select id="f-ordem" aria-label="Ordenar por">
+          <option value="nome">Ordem alfabética</option>
+          <option value="aprovados">Mais projetos aprovados</option>
+          <option value="leis">Mais leis</option>
+          <option value="projetos">Mais projetos apresentados</option>
+          <option value="tramitando">Mais projetos em tramitação</option>
+          <option value="emendas">Mais emendas</option>
+          <option value="total">Mais proposições (total)</option>
+        </select>
+      </div>
+      <div class="grid" id="grid"></div>
+      <div class="more"><button id="btn-more" class="btn">Carregar mais</button></div>
+    </section>
+
+    <section id="partidos" class="section">
+      <div class="section-head"><h2>Produção por partido</h2></div>
+      <div class="table-wrap">
+        <table class="table" id="tbl-partidos">
+          <thead><tr>
+            <th data-k="partido">Partido</th><th data-k="deputados">Deputados</th>
+            <th data-k="projetos">Projetos</th><th data-k="aprovados">Aprovados</th>
+            <th data-k="leis">Leis</th><th data-k="tramitando">Em tramitação</th>
+            <th data-k="emendas">Emendas</th><th data-k="media">Projetos / deputado</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="metodologia" class="section method">
+      <h2>Sobre os dados</h2>
+      <div class="method-grid">
+        <div><h3>Fonte</h3><p>API e arquivos anuais dos <a href="https://dadosabertos.camara.leg.br" target="_blank" rel="noopener">Dados Abertos da Câmara dos Deputados</a>. Contam as proposições apresentadas a partir de <span id="m-inicio">01/02/2023</span>, início da legislatura atual, em que o deputado figura como autor ou coautor. No detalhe de cada deputado dá para escolher qualquer mandato anterior (desde 1987) e filtrar por ano.</p></div>
+        <div><h3>Projetos</h3><p>PL, PLP, PEC, PDL e PRC. <b>Aprovados</b>: projetos já transformados em norma jurídica ou aprovados pela Câmara e aguardando Senado, sanção ou promulgação. <b>Leis</b>: transformados em norma jurídica. <b>Em tramitação</b>: aguardando parecer, deliberação, pauta etc.</p></div>
+        <div><h3>Nota de desempenho</h3><p>Média ponderada de seis indicadores do mandato atual, cada um de 0 a 100. A maioria compara o deputado com os outros 512 (posição relativa). Recursos pagos usa a proporção do maior valor, porque todos têm direito a valores parecidos de emendas ao orçamento. Os pesos podem ser ajustados. A nota mede volume e resultado registrados nos dados abertos, não a qualidade das propostas. Deputados que foram ministros ou ficaram licenciados aparecem com números menores.</p></div>
+        <div><h3>Recursos e cota</h3><p><b>Recursos pagos</b>: emendas individuais ao orçamento de 2024 em diante, valor efetivamente pago (Portal da Transparência), ligadas ao deputado pelo nome. <b>Cota</b>: gastos da cota parlamentar (CEAP) declarados à Câmara, em média por mês com despesas.</p></div>
+        <div><h3>Emendas</h3><p>Emendas de comissão, de plenário, de redação e afins (siglas EMC, EMP, EMR, EMA, ESB…). Requerimentos são contados à parte.</p></div>
+        <div><h3>Atualização</h3><p>Rode <code>python3 scripts/atualizar_dados.py --refresh</code> para baixar a base mais recente. Os mandatos de cada deputado vêm da API da Câmara.</p></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p>Painel Legislativo é um projeto independente e não tem vínculo com a Câmara dos Deputados. Dados públicos sob a Lei de Acesso à Informação.</p>
+    </div>
+  </footer>
+
+  <div class="cmp-tray" id="cmp-tray" hidden>
+    <div class="wrap cmp-tray-inner">
+      <span class="cmp-tray-label">Comparar</span>
+      <div class="cmp-chips" id="cmp-chips"></div>
+      <button class="btn ghost sm" id="cmp-clear">Limpar</button>
+      <button class="btn sm" id="cmp-go">Comparar</button>
+    </div>
+  </div>
+
+  <dialog id="cmp-modal" class="modal wide">
+    <div class="modal-body" id="cmp-body"></div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" hidden></div>
+
+  <dialog id="modal" class="modal">
+    <div class="modal-body" id="modal-body"></div>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+# cache dos downloads (1+ GB) e dados gerados: a publicação gera tudo de novo
+data/raw/
+data/deps/
+data/deputados.json
+_site/
+
+# atalho local para Mac (tem o caminho desta máquina)
+Painel Legislativo.app/
+
+.claude/
+.DS_Store
+__pycache__/
+
+# ferramentas locais (gh)
+.ferramentas/
